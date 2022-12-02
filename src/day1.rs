@@ -1,17 +1,12 @@
 use std::cmp;
-use std::fs::File;
-use std::io::{BufRead, BufReader};
+
+use crate::util::get_input_lines;
 
 pub fn part1() -> i32 {
-    let file = File::open("input/day1.txt").unwrap();
-    let reader = BufReader::new(file);
     let mut maximum = 0;
     let mut current = 0;
 
-    // Read the file line by line using the lines() iterator from std::io::BufRead.
-    for line in reader.lines() {
-        let line = line.unwrap(); // Ignore errors.
-                                  // Show the line and its number.
+    for line in get_input_lines("input/day1.txt") {
         if line.is_empty() {
             current = 0;
             continue;
@@ -23,13 +18,10 @@ pub fn part1() -> i32 {
 }
 
 pub fn part2() -> i32 {
-    let file = File::open("input/day1.txt").unwrap();
-    let reader = BufReader::new(file);
     let mut current = 0;
     let mut counts = Vec::new();
 
-    for line in reader.lines() {
-        let line = line.unwrap();
+    for line in get_input_lines("input/day1.txt") {
         if line.is_empty() {
             counts.push(current);
             current = 0;

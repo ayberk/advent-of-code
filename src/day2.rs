@@ -1,7 +1,4 @@
-use std::{
-    fs::File,
-    io::{BufRead, BufReader},
-}; // 1.3.0
+use crate::util::get_input_lines;
 
 struct Hand {
     ours: Plays,
@@ -57,13 +54,10 @@ fn parse_play(us: &str, them: &str) -> Hand {
 }
 
 pub fn part1() -> i32 {
-    let file = File::open("input/day2.txt").unwrap();
-    let reader = BufReader::new(file);
     let mut total = 0;
 
     // Read the file line by line using the lines() iterator from std::io::BufRead.
-    for line in reader.lines() {
-        let line = line.unwrap();
+    for line in get_input_lines("input/day2.txt") {
         let mut played = line.split_whitespace();
         let them = played.next().unwrap();
         let us = played.next().unwrap();
@@ -74,12 +68,8 @@ pub fn part1() -> i32 {
 }
 
 pub fn part2() -> i32 {
-    let file = File::open("input/day2.txt").unwrap();
-    let reader = BufReader::new(file);
     let mut total = 0;
-
-    for line in reader.lines() {
-        let line = line.unwrap();
+    for line in get_input_lines("input/day2.txt") {
         let mut played = line.split_whitespace();
         let them = played.next().unwrap();
         let us = played.next().unwrap();
