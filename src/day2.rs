@@ -68,7 +68,6 @@ pub fn part1() -> i32 {
 }
 
 pub fn part2() -> i32 {
-    let mut total = 0;
     for line in get_input_lines("input/day2.txt") {
         let mut played = line.split_whitespace();
         let them = played.next().unwrap();
