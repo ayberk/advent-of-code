@@ -1,7 +1,7 @@
-mod day4;
+mod day5;
 pub mod util;
 
-use day4 as solution;
+use day5 as solution;
 
 fn main() {
     println!("{}", solution::part1());
