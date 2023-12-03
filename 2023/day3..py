@@ -1,20 +1,14 @@
 from aocd import get_data
 from aocd import submit
+from collections import defaultdict
 
-DAY = 3
-DATA = """467..114..
-...*......
-..35..633.
-......#...
-617*......
-.....+.58.
-..592.....
-......755.
-...$.*....
-.664.598.."""
+DATA = get_data(day=3, year=2023)
+
+DIRECTIONS = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
+
 
 def check_adjacent(row, col, grid):
-  for dx,dy in [(-1,-1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]:
+  for dx, dy in DIRECTIONS:
     r, c = row + dx, col + dy
     if 0 <= r < len(grid) and 0 <= c < len(grid[r]):
       v = grid[r][c]
@@ -23,14 +17,13 @@ def check_adjacent(row, col, grid):
 
   return False
 
+
 def part1():
-  DATA=get_data(day=3, year=2023)
   grid = []
   result = 0
   for line in DATA.split('\n'):
     grid.append(line)
-  row = 0
-  while row < len(grid):
+  for row in range(len(grid)):
     col = 0
     while col < len(grid[row]):
       num = 0
@@ -41,14 +34,16 @@ def part1():
         num *= 10
         num += int(grid[row][col])
         col += 1
-      if include: result += num
+      if include:
+        result += num
       col += 1
-    row += 1
   return result
 
+
+# Get all stars adjacent to this digit
 def get_gears(row, col, grid):
   stars = []
-  for dx,dy in [(-1,-1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]:
+  for dx, dy in DIRECTIONS:
     r, c = row + dx, col + dy
     if 0 <= r < len(grid) and 0 <= c < len(grid[r]):
       if grid[r][c] == '*':
@@ -56,37 +51,36 @@ def get_gears(row, col, grid):
 
   return stars
 
+
 def part2():
-  DATA=get_data(day=3, year=2023)
   grid = []
-  result =0
-  gears = {}
+  result = 0
+  gears = defaultdict(set)
   for line in DATA.split('\n'):
     grid.append(line)
-  row = 0
-  while row < len(grid):
+  for row in range(len(grid)):
     col = 0
     while col < len(grid[row]):
       num = 0
       adjacent_stars = []
       while col < len(grid[row]) and grid[row][col].isdigit():
-        for x in get_gears(row, col, grid): adjacent_stars.append(x)
+        adjacent_stars.extend(get_gears(row, col, grid))
         num *= 10
         num += int(grid[row][col])
         col += 1
+      # adjacent_stars has all *'s adjacent to this number. now we're reversing the mapping.
       for (x, y) in adjacent_stars:
-        if (x, y) not in gears: gears[(x,y)] = set()
         gears[(x, y)].add(num)
       col += 1
-    row += 1
-  for k, v in gears.items():
-    if len(v) == 2:
-      res = 1
-      for vv in v:
-        res *= vv
-      result += res
+  # gears holds adjacent numbers to each '*'. key is the (r, c) of the '*', and values is the set of
+  # adjacent numbers.
+  for nums in [list(v) for v in gears.values()]:
+    if len(nums) == 2:
+      result += (nums[0] * nums[1])
   return result
 
 
+print(part1())
+print(part2())
 submit(part1(), part="a", day=3, year=2023)
 submit(part2(), part="b", day=3, year=2023)
