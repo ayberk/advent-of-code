@@ -1,6 +1,7 @@
 from aocd import get_data
 from aocd import submit
 from collections import defaultdict
+from collections import OrderedDict
 from collections import deque
 
 DAY = 15
@@ -14,6 +15,12 @@ def hash(instr):
     result %= 256
   return result
 
+def find(label, box):
+  for i, (a, _) in enumerate(box):
+    if a == label:
+      return i
+  return -1
+
 def part1():
   return sum(hash(t) for t in DATA.split(","))
 
@@ -24,24 +31,18 @@ def part2():
     if "=" in token:
       label, focal = token.split("=")
       h = hash(label)
-      f = True
-      for i, (a, _) in enumerate(boxes[h]):
-        if a == label:
-          boxes[h][i] = (a, focal)
-          f = False
-          break
-      if f:
+      idx = find(label, boxes[h])
+      if idx >= 0:
+          boxes[h][idx] = (label, focal)
+      else:
         boxes[h].append((label, focal))
     elif "-" in token:
       label = token[:-1]
       h = hash(label)
-      idx = -1
-      for i in range(len(boxes[h])):
-        if boxes[h][i][0] == label:
-          idx = i
-          break
+      idx = find(label, boxes[h])
       if idx >= 0:
         del boxes[h][idx]
+
   total = 0
   for k, q in boxes.items():
     for i in range(len(q)):
