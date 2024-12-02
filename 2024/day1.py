@@ -5,7 +5,7 @@ from aocd import get_data, submit
 DAY = 1
 DATA = get_data(day=1)
 
-lines = [l for l in DATA.split("\n")]
+lines = DATA.split("\n")
 left, right = [], []
 for line in lines:
     l, r = line.split("   ")
