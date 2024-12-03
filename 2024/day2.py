@@ -2,12 +2,11 @@ from aocd import get_data, submit
 
 DAY = 2
 DATA = get_data(day=DAY, year=2024)
-# DATA = """7 6 4 2 1
-# 1 2 7 8 9
-# 9 7 6 2 1
-# 1 3 2 4 5
-# 8 6 4 4 1
-# 1 3 6 7 9"""
+
+LEVELS = []
+for level in DATA.split("\n"):
+    l = [int(e) for e in level.split(" ")]
+    LEVELS.append(l)
 
 
 def is_safe(level):
@@ -31,22 +30,11 @@ def is_safe_with_removal(level):
 
 
 def part1():
-    result = 0
-    for level in DATA.split("\n"):
-        l = [int(e) for e in level.split(" ")]
-        if is_safe(l):
-            result += 1
-
-    return result
+    return sum(is_safe(l) for l in LEVELS)
 
 
 def part2():
-    result = 0
-    for level in DATA.split("\n"):
-        l = [int(e) for e in level.split(" ")]
-        if is_safe(l) or is_safe_with_removal(l):
-            result += 1
-    return result
+    return sum(is_safe(l) or is_safe_with_removal(l) for l in LEVELS)
 
 
 submit(part1(), part="a", day=DAY, year=2024)
