@@ -1,35 +1,8 @@
-from aocd import get_data, submit
 from collections import defaultdict
 
-DAY = 5
-DATA = """47|53
-97|13
-97|61
-97|47
-75|29
-61|13
-75|53
-29|13
-97|29
-53|29
-61|53
-97|53
-61|29
-47|13
-75|47
-97|75
-47|61
-75|61
-47|29
-75|13
-53|13
+from aocd import get_data, submit
 
-75,47,61,53,29
-97,61,53,29,13
-75,29,13
-75,97,47,61,53
-61,13,29
-97,13,75,29,47""".split("\n")
+DAY = 5
 DATA = get_data(day=DAY, year=2024).split("\n")
 
 
@@ -39,32 +12,18 @@ def parse_input():
     pages = []
     while DATA[line_no]:
         left, right = DATA[line_no].split("|")
-        ordering[left].append(right)
+        ordering[int(left)].append(int(right))
         line_no += 1
-    line_no += 1
+    line_no += 1  # skip the empty line
     while line_no < len(DATA):
-        pages.append(DATA[line_no].split(","))
+        pages.append([int(x) for x in DATA[line_no].split(",")])
         line_no += 1
     return (ordering, pages)
 
 
 def get_invalid_pages():
-    invalid = []
     ordering, pages = parse_input()
-    for page in pages:
-        valid = True
-        for i in range(1, len(page)):
-            order = ordering[page[i]]
-            # if any of these come before page[i] invalid
-            for num in page[:i]:
-                if num in order:
-                    valid = False
-                    break
-            if not valid:
-                break
-        if not valid:
-            invalid.append(page)
-    return invalid
+    return [page for page in pages if not is_valid(page, ordering)[0]]
 
 
 def is_valid(page, ordering):
@@ -73,27 +32,13 @@ def is_valid(page, ordering):
         # if any of these come before page[i] invalid
         for j, num in enumerate(page[:i]):
             if num in order:
-                return False, i, j
+                return False, i, j  # return the out-of-order indices
     return True, -1, -1
 
 
 def part1():
     ordering, pages = parse_input()
-    total = 0
-    for page in pages:
-        valid = True
-        for i in range(1, len(page)):
-            order = ordering[page[i]]
-            # if any of these come before page[i] invalid
-            for num in page[:i]:
-                if num in order:
-                    valid = False
-                    break
-            if not valid:
-                break
-        if valid:
-            total += int(page[len(page) // 2])
-    return total
+    return sum(page[len(page) // 2] for page in pages if is_valid(page, ordering)[0])
 
 
 def part2():
@@ -103,13 +48,14 @@ def part2():
     for page in invalid_pages:
         temp = page[:]
         res = is_valid(temp, ordering)
+        # brute force until it's ordered'
         while not res[0]:
             a, b = res[1], res[2]
             temp[a], temp[b] = temp[b], temp[a]
             res = is_valid(temp, ordering)
             if res[0]:
                 new_valid_pages.append(temp)
-    return sum(int(page[len(page) // 2]) for page in new_valid_pages)
+    return sum(page[len(page) // 2] for page in new_valid_pages)
 
 
 submit(part1(), part="a", day=DAY, year=2024)
