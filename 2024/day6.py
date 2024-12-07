@@ -46,13 +46,17 @@ def part1():
 def is_cycle(r, c):
     direction = (-1, 0)
     steps_taken = 0
+    visited = set()
     while steps_taken < SIZE // 2:
         if r < 0 or r >= len(DATA) or c < 0 or c >= len(DATA[0]):
             return 0
+        if (r, c, direction) in visited:
+            return 1
         if DATA[r][c] == "#":
             r, c = r - direction[0], c - direction[1]
             direction = turn(direction)
             continue
+        visited.add((r, c, direction))
         steps_taken += 1
         r, c = r + direction[0], c + direction[1]
 
