@@ -8,7 +8,7 @@ STARTS = []
 for r in range(len(DATA)):
     for c in range(len(DATA[r])):
         if DATA[r][c] == 0:
-            STARTS.append((r, c))
+            STARTS.append((r, c))  # noqa: PERF401
 
 
 def dfs(r, c, prev, visited, found):

@@ -118,4 +118,4 @@ def part2():
 
 print(part2())
 submit(part1(), part="a", day=DAY, year=2024)
-submit(part2(), part="b", day=DAY, year=2024)
+# submit(part2(), part="b", day=DAY, year=2024)
