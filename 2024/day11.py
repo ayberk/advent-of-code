@@ -1,9 +1,10 @@
-from aocd import get_data, submit
+from collections import Counter
 
-from collections import defaultdict, Counter
+from aocd import get_data, submit
 
 DAY = 11
 DATA = [int(x) for x in get_data(day=DAY, year=2024).split(" ")]
+
 
 def blink(nums):
     result = []
@@ -21,14 +22,14 @@ def blink(nums):
 
 def part1():
     result = DATA
-    for i in range(25):
+    for _ in range(25):
         result = blink(result[:])
     return len(result)
 
 
 def part2():
     stones = Counter(DATA)
-    for blinks in range(75):
+    for _ in range(75):
         new_stones = Counter()
         for n, num_stone in stones.items():
             if n == 0:
