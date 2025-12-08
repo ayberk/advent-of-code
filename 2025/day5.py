@@ -1,5 +1,4 @@
 import logging
-from collections import deque
 
 from aocd import get_data, get_puzzle, submit
 
@@ -59,24 +58,16 @@ def part2():
         else:
             break
 
-    # merge the intervals
-    intervals.sort(key=lambda x: (x.left, x.right))
-    intervals = deque(intervals)
-    idx = 0
-    while True:
-        a, b = intervals[idx], intervals[idx + 1]
-        if a.right >= b.left:
-            del intervals[idx]
-            del intervals[idx]
-            aa = min(a.left, b.left)
-            bb = max(a.right, b.right)
-            intervals.insert(idx, Interval(aa, bb))
-        else:
-            idx += 1
-        if idx >= len(intervals) - 1:
-            break
+    intervals.sort(key=lambda x: x.left)
 
-    return sum(a.right - a.left + 1 for a in intervals)
+    merged = []
+    for interval in intervals:
+        if not merged or interval.left > merged[-1].right:
+            merged.append(interval)
+        else:
+            merged[-1].right = max(merged[-1].right, interval.right)
+
+    return sum(a.right - a.left + 1 for a in merged)
 
 
 submit(part1(), part="a", day=DAY)
